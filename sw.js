@@ -1,6 +1,6 @@
 // GitHub Pagesでもサブパスに自動対応
 const BASE = self.registration.scope.replace(/\/$/, '');
-const CACHE_NAME = 'ringshogi-v1';
+const CACHE_NAME = 'ringshogi-v2';
 const ASSETS = [
   `${BASE}/`, `${BASE}/index.html`, `${BASE}/manifest.webmanifest`,
   `${BASE}/sw.js`, `${BASE}/icons/icon-192.png`, `${BASE}/icons/icon-512.png`
