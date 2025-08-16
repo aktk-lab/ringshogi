@@ -62,7 +62,7 @@
   addEventListener('orientationchange', () => setTimeout(resizeBoard,200));
   visualViewport?.addEventListener('resize', resizeBoard);
 
-  // --- 最小の盤＆駒（R/B/K/Pのみデモ） ---
+  // --- 盤/駒データ（R/B/K/P） ---
   const CENTER=(x,y)=> (x>0&&x<6&&y>0&&y<6);
   const SENTE=1, GOTE=2, PT={K:'K',R:'R',B:'B',P:'P'};
   let board=[], sideToMove=SENTE, history=[], fwd=[];
@@ -73,28 +73,14 @@
     draw();
   }
   function put(x,y,p){ board[y][x].occ=p; }
-  function draw(){
-    cx.clearRect(0,0,cv.width,cv.height);
-    for(let y=0;y<N;y++)for(let x=0;x<N;x++){
-      cx.fillStyle = board[y][x].kind==='R' ? '#102844' : '#1b2238';
-      cx.fillRect(x*CELL,y*CELL,CELL-1,CELL-1);
-      const p=board[y][x].occ; if(p){
-        cx.fillStyle = p.side===SENTE?'#e5e7eb':'#facc15';
-        cx.font = Math.floor(CELL*0.5)+"px system-ui"; cx.textAlign='center'; cx.textBaseline='middle';
-        cx.fillText(p.type, x*CELL+CELL/2, y*CELL+CELL/2);
-      }
-    }
-    if(sel){ cx.strokeStyle='#fff'; cx.lineWidth=2; cx.strokeRect(sel.x*CELL+4, sel.y*CELL+4, CELL-8, CELL-8);
-      genMoves(sel.x,sel.y).forEach(m=>{ cx.strokeStyle='#94a3b8'; cx.strokeRect(m.x*CELL+8, m.y*CELL+8, CELL-16, CELL-16); });
-    }
-  }
+
   function onRing(x,y){ return x===0||x===6||y===0||y===6; }
   function wrap(x,y,dx,dy){
     let nx=x+dx, ny=y+dy;
     if(nx<0||nx>=N||ny<0||ny>=N){
       if(dy===0 && (y===0||y===N-1)) return {x:(nx+N)%N, y};
       if(dx===0 && (x===0||x===N-1)) return {x, y:(ny+N)%N};
-      if(Math.abs(dx)===1 && Math.abs(dy)===1) return {x:(nx+N)%N, y:(ny+N)%N}; // 角の対角ワープ
+      if(Math.abs(dx)===1 && Math.abs(dy)===1) return {x:(nx+N)%N, y:(ny+N)%N}; // 対角ワープ
     }
     return {x:nx,y:ny};
   }
@@ -138,11 +124,58 @@
       const p=board[y][x].occ; if(!p||p.side!==sideToMove) continue;
       for(const m of genMoves(x,y)){
         const cap=board[m.y][m.x].occ; const center = CENTER(m.x,m.y)?0.2:0.1;
-        const score=(cap?({K:1000,R:5,B:5,P:1}[cap.type]||1):0)+center;
+        const score=(cap?({K:1000,R:5,B:5,P:1}[cap?.type]||1):0)+center;
         if(score>bestScore){ bestScore=score; best={from:{x,y},to:m}; }
       }
     }
     if(best){ move(best.from,best.to); draw(); }
+  }
+
+  // ======= 五角形の将棋駒描画 =======
+  function drawPiecePentagon(x, y, side, label){
+    const cx0 = x*CELL + CELL/2;
+    const cy0 = y*CELL + CELL/2;
+    const w = CELL*0.82, h=CELL*0.92;
+    const pts = [
+      [0, -h/2], [ w*0.38, -h*0.18], [ w*0.32,  h/2],
+      [-w*0.32,  h/2], [-w*0.38, -h*0.18],
+    ];
+    const rot = (side===GOTE) ? Math.PI : 0;
+    const cos = Math.cos(rot), sin = Math.sin(rot);
+    cx.save();
+    cx.translate(cx0, cy0);
+    cx.beginPath();
+    for(let i=0;i<pts.length;i++){
+      const x1 = pts[i][0]*cos - pts[i][1]*sin;
+      const y1 = pts[i][0]*sin + pts[i][1]*cos;
+      if(i===0) cx.moveTo(x1,y1); else cx.lineTo(x1,y1);
+    }
+    cx.closePath();
+    cx.fillStyle = (side===SENTE)? "#e5e7eb" : "#facc15";
+    cx.strokeStyle = "#0b1020";
+    cx.lineWidth = Math.max(2, CELL*0.06);
+    cx.fill(); cx.stroke();
+    cx.fillStyle = "#0b1020";
+    cx.font = Math.floor(CELL*0.44) + "px system-ui";
+    cx.textAlign = "center"; cx.textBaseline = "middle";
+    cx.rotate(rot);
+    const map = {K:"王", R:"飛", B:"角", P:"歩"};
+    const txt = map[label] || label;
+    cx.fillText(txt, 0, CELL*0.02);
+    cx.restore();
+  }
+
+  function draw(){
+    cx.clearRect(0,0,cv.width,cv.height);
+    for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+      cx.fillStyle = board[y][x].kind==='R' ? '#102844' : '#1b2238';
+      cx.fillRect(x*CELL,y*CELL,CELL-1,CELL-1);
+      const p=board[y][x].occ; if(p){ drawPiecePentagon(x,y,p.side,p.type); }
+    }
+    if(sel){
+      cx.strokeStyle='#fff'; cx.lineWidth=2; cx.strokeRect(sel.x*CELL+4, sel.y*CELL+4, CELL-8, CELL-8);
+      genMoves(sel.x,sel.y).forEach(m=>{ cx.strokeStyle='#94a3b8'; cx.strokeRect(m.x*CELL+8, m.y*CELL+8, CELL-16, CELL-16); });
+    }
   }
 
   let sel=null;
@@ -159,7 +192,7 @@
   document.getElementById('redo').onclick=redo;
   document.getElementById('aiMove').onclick=aiStep;
 
-  setup(); // 起動
+  setup();
 </script>
 </body>
 </html>
