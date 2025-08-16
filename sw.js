@@ -1,6 +1,6 @@
-// GitHub Pagesでもサブパスに自動対応（v3に更新）
+// GitHub Pagesでもサブパスに自動対応（v4）
 const BASE = self.registration.scope.replace(/\/$/, '');
-const CACHE_NAME = 'ringshogi-v3';
+const CACHE_NAME = 'ringshogi-v4';
 const ASSETS = [
   `${BASE}/`, `${BASE}/index.html`, `${BASE}/manifest.webmanifest`,
   `${BASE}/sw.js`, `${BASE}/icons/icon-192.png`, `${BASE}/icons/icon-512.png`
