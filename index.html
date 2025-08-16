@@ -32,7 +32,7 @@
   <footer>オフライン対応 / ホーム画面に追加でアプリ風に</footer>
 
 <script>
-  // PWA登録＋即時更新ボタン
+  // --- PWA登録＋即時更新 ---
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
     navigator.serviceWorker.addEventListener('controllerchange', () => location.reload());
@@ -43,7 +43,7 @@
     });
   }
 
-  // キャンバスのサイズ調整（見切れ防止）
+  // --- キャンバスサイズ（見切れ防止） ---
   const cv = document.getElementById('board'); const cx = cv.getContext('2d');
   const N=7; let CELL=64;
   function resizeBoard(){
@@ -131,36 +131,34 @@
     if(best){ move(best.from,best.to); draw(); }
   }
 
-  // ======= 五角形の将棋駒描画 =======
+  // ===== 五角形の将棋駒（漢字表示）=====
   function drawPiecePentagon(x, y, side, label){
     const cx0 = x*CELL + CELL/2;
     const cy0 = y*CELL + CELL/2;
     const w = CELL*0.82, h=CELL*0.92;
     const pts = [
-      [0, -h/2], [ w*0.38, -h*0.18], [ w*0.32,  h/2],
-      [-w*0.32,  h/2], [-w*0.38, -h*0.18],
+      [0,-h/2],[ w*0.38,-h*0.18],[ w*0.32, h/2],
+      [-w*0.32, h/2],[-w*0.38,-h*0.18],
     ];
-    const rot = (side===GOTE) ? Math.PI : 0;
-    const cos = Math.cos(rot), sin = Math.sin(rot);
-    cx.save();
-    cx.translate(cx0, cy0);
-    cx.beginPath();
+    const rot = (side===GOTE)?Math.PI:0;
+    const cos=Math.cos(rot), sin=Math.sin(rot);
+    cx.save(); cx.translate(cx0,cy0); cx.beginPath();
     for(let i=0;i<pts.length;i++){
-      const x1 = pts[i][0]*cos - pts[i][1]*sin;
-      const y1 = pts[i][0]*sin + pts[i][1]*cos;
+      const x1=pts[i][0]*cos-pts[i][1]*sin, y1=pts[i][0]*sin+pts[i][1]*cos;
       if(i===0) cx.moveTo(x1,y1); else cx.lineTo(x1,y1);
     }
     cx.closePath();
     cx.fillStyle = (side===SENTE)? "#e5e7eb" : "#facc15";
-    cx.strokeStyle = "#0b1020";
-    cx.lineWidth = Math.max(2, CELL*0.06);
+    cx.strokeStyle = "#0b1020"; cx.lineWidth = Math.max(2,CELL*0.06);
     cx.fill(); cx.stroke();
-    cx.fillStyle = "#0b1020";
-    cx.font = Math.floor(CELL*0.44) + "px system-ui";
-    cx.textAlign = "center"; cx.textBaseline = "middle";
-    cx.rotate(rot);
+
+    // 漢字ラベル
     const map = {K:"王", R:"飛", B:"角", P:"歩"};
     const txt = map[label] || label;
+    cx.fillStyle = "#0b1020";
+    cx.font = Math.floor(CELL*0.44)+"px system-ui";
+    cx.textAlign="center"; cx.textBaseline="middle";
+    cx.rotate(rot);
     cx.fillText(txt, 0, CELL*0.02);
     cx.restore();
   }
@@ -173,17 +171,26 @@
       const p=board[y][x].occ; if(p){ drawPiecePentagon(x,y,p.side,p.type); }
     }
     if(sel){
-      cx.strokeStyle='#fff'; cx.lineWidth=2; cx.strokeRect(sel.x*CELL+4, sel.y*CELL+4, CELL-8, CELL-8);
-      genMoves(sel.x,sel.y).forEach(m=>{ cx.strokeStyle='#94a3b8'; cx.strokeRect(m.x*CELL+8, m.y*CELL+8, CELL-16, CELL-16); });
+      cx.strokeStyle='#fff'; cx.lineWidth=2;
+      cx.strokeRect(sel.x*CELL+4, sel.y*CELL+4, CELL-8, CELL-8);
+      genMoves(sel.x,sel.y).forEach(m=>{
+        cx.strokeStyle='#94a3b8';
+        cx.strokeRect(m.x*CELL+8, m.y*CELL+8, CELL-16, CELL-16);
+      });
     }
   }
 
   let sel=null;
   cv.addEventListener('pointerdown',ev=>{
-    const r=cv.getBoundingClientRect(); const x=Math.floor((ev.clientX-r.left)/CELL); const y=Math.floor((ev.clientY-r.top)/CELL);
-    if(!sel){ if(board[y][x].occ && board[y][x].occ.side===sideToMove){ sel={x,y}; draw(); }
-    }else{ const moves=genMoves(sel.x,sel.y);
-      if(moves.some(m=>m.x===x&&m.y===y)){ move(sel,{x,y}); sel=null; draw(); } else { sel=null; draw(); }
+    const r=cv.getBoundingClientRect();
+    const x=Math.floor((ev.clientX-r.left)/CELL);
+    const y=Math.floor((ev.clientY-r.top)/CELL);
+    if(!sel){
+      if(board[y][x].occ && board[y][x].occ.side===sideToMove){ sel={x,y}; draw(); }
+    }else{
+      const moves=genMoves(sel.x,sel.y);
+      if(moves.some(m=>m.x===x&&m.y===y)){ move(sel,{x,y}); sel=null; draw(); }
+      else { sel=null; draw(); }
     }
   });
 
