@@ -1,0 +1,1 @@
+// placeholder for integration; no JS needed for static demo.

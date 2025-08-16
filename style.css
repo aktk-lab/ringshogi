@@ -1,0 +1,34 @@
+:root{
+  --bg:#0b1220; --frame:#1b2a4d;
+  --komaEdge:#cfa66a; --ink:#1a120b; --shadow:rgba(0,0,0,.35);
+}
+html,body{margin:0;background:linear-gradient(135deg,#0f172a,#0b1220);color:#e6edf7;font-family:'Yu Gothic',system-ui,sans-serif}
+h1{margin:16px;text-align:center;font-weight:800}
+p, .note{max-width:920px;margin:0 auto 12px; padding:0 12px; color:#b8c7e6}
+.board{
+  max-width:920px; margin:16px auto; padding:16px;
+  display:grid; grid-template-columns:repeat(8, 88px); gap:12px;
+  justify-content:center; background:linear-gradient(180deg,#0a1326,#0a1022);
+  border:1px solid var(--frame); border-radius:14px; box-shadow:0 10px 30px var(--shadow);
+}
+.koma{
+  width:88px;height:100px; display:grid; place-items:center; position:relative;
+  background: radial-gradient(120% 120% at 10% 0%, #fff7dc, #efd9a5);
+  color:var(--ink);
+  font-family: 'Yuji Syuku','Shippori Mincho','Noto Serif JP',serif;
+  font-size:44px; letter-spacing:.06em; line-height:1;
+  clip-path: polygon(12% 100%, 88% 100%, 100% 18%, 50% 0%, 0% 18%);
+  border:2px solid var(--komaEdge);
+  box-shadow: 0 8px 18px var(--shadow), inset 0 -6px 0 rgba(0,0,0,.08);
+  text-shadow: 0 1px 0 #fff3, 0 2px 0 #fff2;
+  user-select:none;
+}
+.k-fu{font-size:46px}
+.k-kyou{font-size:44px}
+.k-kei{font-size:42px}
+.k-gin{font-size:42px}
+.k-kin{font-size:40px;font-weight:700}
+.k-kaku{font-size:40px}
+.k-hi{font-size:42px}
+.k-gyoku{font-size:42px}
+.koma.rev{transform:rotate(180deg)}
