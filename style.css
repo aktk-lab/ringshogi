@@ -1,34 +1,59 @@
 :root{
-  --bg:#0b1220; --frame:#1b2a4d;
-  --komaEdge:#cfa66a; --ink:#1a120b; --shadow:rgba(0,0,0,.35);
+  --bg1:#0f172a; --bg2:#0b1220;
+  --tile1:#0e1a30; --tile2:#0c1628; --grid:#1b2a4d;
+  --komaBase1:#fff7dc; --komaBase2:#efd9a5; --komaEdge:#cfa66a; --ink:#1a120b;
+  --shadow: rgba(0,0,0,.35);
 }
-html,body{margin:0;background:linear-gradient(135deg,#0f172a,#0b1220);color:#e6edf7;font-family:'Yu Gothic',system-ui,sans-serif}
-h1{margin:16px;text-align:center;font-weight:800}
-p, .note{max-width:920px;margin:0 auto 12px; padding:0 12px; color:#b8c7e6}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#e6edf7;font-family:'Yu Gothic',system-ui,sans-serif}
+.container{max-width:980px;margin:0 auto;padding:12px}
+h1{margin:8px 0 4px;font-weight:900;letter-spacing:.02em}
+h1 small{font-weight:600;color:#9fb6e9}
+.desc{opacity:.9;margin-top:2px}
 .board{
-  max-width:920px; margin:16px auto; padding:16px;
-  display:grid; grid-template-columns:repeat(8, 88px); gap:12px;
-  justify-content:center; background:linear-gradient(180deg,#0a1326,#0a1022);
-  border:1px solid var(--frame); border-radius:14px; box-shadow:0 10px 30px var(--shadow);
+  --size: 64px;
+  display:grid; grid-template-columns: repeat(9, var(--size));
+  gap: 4px; padding:16px;
+  background: linear-gradient(180deg,#0a1326,#0a1022);
+  border:1px solid var(--grid); border-radius:14px; box-shadow:0 10px 30px var(--shadow);
+  touch-action: manipulation;
+  transition: transform .25s ease;
 }
+.cell{
+  width:var(--size); height:var(--size);
+  background: repeating-linear-gradient(180deg, var(--tile1), var(--tile1) 6px, var(--tile2) 6px, var(--tile2) 12px);
+  border:1px solid rgba(255,255,255,.05);
+  border-radius:8px; display:flex; align-items:center; justify-content:center;
+  position:relative; overflow:visible;
+}
+/* 五角形の駒 */
 .koma{
-  width:88px;height:100px; display:grid; place-items:center; position:relative;
-  background: radial-gradient(120% 120% at 10% 0%, #fff7dc, #efd9a5);
+  width:calc(var(--size) - 10px);
+  height:calc(var(--size) + 14px);
+  display:grid; place-items:center; position:absolute;
+  top:50%; left:50%; transform:translate(-50%,-52%);
+  background: radial-gradient(120% 120% at 10% 0%, var(--komaBase1), var(--komaBase2));
   color:var(--ink);
-  font-family: 'Yuji Syuku','Shippori Mincho','Noto Serif JP',serif;
-  font-size:44px; letter-spacing:.06em; line-height:1;
+  font-family:'Yuji Syuku','Shippori Mincho','Noto Serif JP',serif;
+  font-size:calc(var(--size) * 0.56);
+  letter-spacing:.04em; line-height:1;
   clip-path: polygon(12% 100%, 88% 100%, 100% 18%, 50% 0%, 0% 18%);
   border:2px solid var(--komaEdge);
   box-shadow: 0 8px 18px var(--shadow), inset 0 -6px 0 rgba(0,0,0,.08);
-  text-shadow: 0 1px 0 #fff3, 0 2px 0 #fff2;
-  user-select:none;
+  text-shadow: 0 0.5px 0 #fff3, 0 1px 0 #fff2;
+  user-select:none; pointer-events:none;
 }
-.k-fu{font-size:46px}
-.k-kyou{font-size:44px}
-.k-kei{font-size:42px}
-.k-gin{font-size:42px}
-.k-kin{font-size:40px;font-weight:700}
-.k-kaku{font-size:40px}
-.k-hi{font-size:42px}
-.k-gyoku{font-size:42px}
-.koma.rev{transform:rotate(180deg)}
+.koma.rev{ transform: translate(-50%,-52%) rotate(180deg); }
+/* 駒ごとの微調整（必要に応じて） */
+.k-fu{font-size:calc(var(--size) * 0.60)}
+.k-kin{font-weight:700}
+
+.toolbar{display:flex;gap:12px;justify-content:center;margin:12px 0}
+button{appearance:none;border:none;border-radius:10px;padding:10px 14px;font-weight:800;
+  color:#06101c;background:linear-gradient(180deg,#60a5fa,#3b82f6);box-shadow:0 6px 16px rgba(59,130,246,.35);cursor:pointer}
+button:active{transform:translateY(1px)}
+.note{opacity:.9;line-height:1.7}
+
+@media (max-width:600px){
+  .board{ --size: 44px; }
+}

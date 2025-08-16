@@ -1,31 +1,37 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>将棋駒（毛筆フォント版）</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&family=Shippori+Mincho:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>将棋盤（五角形＋毛筆フォント）</title>
+  <!-- Brush & Mincho fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&family=Shippori+Mincho:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1>将棋駒（毛筆フォント）デモ</h1>
-<p>このデモのフォントは Google Fonts の <b>Yuji Syuku</b>（毛筆）と <b>Shippori Mincho</b>（明朝）を使用しています。</p>
-<div class="board">
-  <div class="koma k-fu">歩</div>
-  <div class="koma k-kyou">香</div>
-  <div class="koma k-kei">桂</div>
-  <div class="koma k-gin">銀</div>
-  <div class="koma k-kin">金</div>
-  <div class="koma k-kaku">角</div>
-  <div class="koma k-hi">飛</div>
-  <div class="koma k-gyoku">玉</div>
-</div>
-<div class="note">
-  導入方法：この <code>style.css</code> と Google Fonts のリンクタグを、あなたのゲームに組み込んでください。<br>
-  駒は <code>&lt;div class="koma"&gt;歩&lt;/div&gt;</code> のようにテキストで表示します。盤面に載せる場合は、既存のマス要素の中に入れてください。
-</div>
-<script src="script.js"></script>
+  <header class="container">
+    <h1>将棋盤デモ <small>五角形の駒 + 毛筆フォント</small></h1>
+    <p class="desc">駒書体：<b>Yuji Syuku</b>（毛筆）＋ <b>Shippori Mincho</b>（明朝）。 盤は9×9・初期配置。</p>
+  </header>
+
+  <main class="container">
+    <div id="board" class="board" aria-label="将棋盤 9x9"></div>
+    <div class="toolbar">
+      <button id="btnFlip">盤面を反転</button>
+      <button id="btnReset">初期配置に戻す</button>
+    </div>
+  </main>
+
+  <footer class="container">
+    <p class="note">
+      使い方：この3ファイル（index.html / style.css / script.js）をそのままアップロードしてください。<br>
+      既存プロジェクトに取り込む場合は、&lt;head&gt;内の Google Fonts と <code>.koma</code> のCSSを利用し、
+      各マスに <code>&lt;div class="koma"&gt;歩&lt;/div&gt;</code> を置くだけで駒を表示できます。
+    </p>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
